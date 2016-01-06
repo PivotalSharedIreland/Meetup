@@ -1,0 +1,14 @@
+pairs:
+  tg: Tyson Gern; tgern
+  vb: Victoria Barr; vbarr
+  dt: Dan Todor; dtodor
+  gp: Georgios Papoutsakis; gpap
+  fm: Fabio Mangione; fmangione
+  bb: Brian Butz; bbutz
+  bf: Brian Finnerty; bfinn
+  kd: Kieran Donegan;
+  ks: Konstantin Semenov; kseme
+  bh: Bengt Hammarlund
+email:
+  prefix: labs-pair
+  domain: pivotal.io

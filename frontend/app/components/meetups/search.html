@@ -1,0 +1,14 @@
+<h2>list</h2>
+
+<form (ngSubmit)="onSubmit()">
+    <label for="city">City</label>
+    <input id="city" type="text" class="form-control" required [(ngModel)]="city">
+
+    <label for="countryCode">Country</label>
+    <input id="countryCode" type="text" class="form-control" required [(ngModel)]="countryCode">
+
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
+<span>{{result}}</span>
