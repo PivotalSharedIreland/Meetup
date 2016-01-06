@@ -5,7 +5,10 @@
     <input id="city" type="text" class="form-control" required [(ngModel)]="city">
 
     <label for="countryCode">Country</label>
-    <input id="countryCode" type="text" class="form-control" required [(ngModel)]="countryCode">
+    <!--<input id="countryCode" type="text" class="form-control" required >-->
+    <select id="countryCode" class="form-control" [(ngModel)]="countryCode">
+        <option *ngFor="#countryCode of countryCodes" [value]="countryCode.iso_code">{{countryCode.name}}</option>
+    </select>
 
     <button type="submit" class="btn btn-default">Submit</button>
 </form>

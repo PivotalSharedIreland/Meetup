@@ -2,6 +2,7 @@ export class Meetup {
     constructor(public id:string,
                 public name:string,
                 public description:string,
+                public urlName:string,
                 public time:Date) {
     }
 
@@ -10,7 +11,7 @@ export class Meetup {
     }
 
     static fromObject(obj) {
-        return new Meetup(obj.id, obj.name, obj.description, new Date(obj.time));
+        return new Meetup(obj.id, obj.name, obj.description, obj.urlName, new Date(obj.time));
     }
 
     public toString() {

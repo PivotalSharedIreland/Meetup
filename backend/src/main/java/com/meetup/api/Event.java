@@ -8,6 +8,15 @@ public class Event {
     private String name;
     private String description;
     private Date time;
+    private Group group;
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 
     public String getId() {
         return id;

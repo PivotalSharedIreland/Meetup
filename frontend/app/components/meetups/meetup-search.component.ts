@@ -11,11 +11,15 @@ import {MeetupListComponent} from "./meetup-list.component";
 })
 export class MeetupSearchComponent {
 
-    constructor(private meetupService:MeetupService) {}
+    constructor(private meetupService:MeetupService) {
+        this.countryCode = 'IE';
+        this.initCountryCodes()
+    }
 
     result:Meetup[];
     city:string;
     countryCode:string;
+    countryCodes: any[];
 
 
     onSubmit() {
@@ -30,5 +34,12 @@ export class MeetupSearchComponent {
                 },
                 () => console.log('Meetup results loaded')
             );
+    }
+
+    initCountryCodes(){
+        this.countryCodes = [
+            {name:'Ireland', iso_code:'IE'},
+            {name:'Italy', iso_code:'IT'}
+        ]
     }
 }

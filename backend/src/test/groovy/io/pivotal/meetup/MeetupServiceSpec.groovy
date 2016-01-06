@@ -1,6 +1,7 @@
 package io.pivotal.meetup
 
 import com.meetup.api.Event
+import com.meetup.api.Group
 import com.meetup.api.MeetupClient
 import com.meetup.api.Meta
 import com.meetup.api.OpenEventsResult
@@ -20,13 +21,20 @@ class MeetupServiceSpec extends Specification {
 
         then:
         1 * meetupService.meetupClient.findOpenEventsByCityAndCountryCode('Dublin', 'IE') >> {
-            new OpenEventsResult(results: [new Event(id: "1", name: 'First Meetup', description: 'First Meetup desc', time: new Date(2016, 1, 1)), new Event(id: "2")], meta: new Meta(totalCount: 2))
+
+            new OpenEventsResult(results: [new Event(id: "1",
+                    name: 'First Meetup',
+                    description: 'First Meetup desc',
+                    time: new Date(2016, 1, 1),
+                    group: new Group(urlName: 'url1')),
+                                           new Event(id: "2")], meta: new Meta(totalCount: 2))
         }
 
         meetups.size() == 2
         meetups[0].id == '1'
         meetups[0].name == 'First Meetup'
         meetups[0].description == 'First Meetup desc'
+        meetups[0].urlName == 'url1'
         meetups[1].id == '2'
     }
 

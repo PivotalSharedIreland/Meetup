@@ -40,6 +40,10 @@ public class MeetupService {
         meetup.setName(event.getName());
         meetup.setDescription(event.getDescription());
         meetup.setTime(event.getTime());
+
+        if (event.getGroup() != null) {
+            meetup.setUrlName(event.getGroup().getUrlName());
+        }
         return meetup;
     }
 }

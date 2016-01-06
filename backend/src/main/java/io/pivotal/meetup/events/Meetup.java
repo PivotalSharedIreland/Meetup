@@ -8,6 +8,15 @@ public class Meetup {
     private String name;
     private String description;
     private Date time;
+    private String urlName;
+
+    public String getUrlName() {
+        return urlName;
+    }
+
+    public void setUrlName(String urlName) {
+        this.urlName = urlName;
+    }
 
     public String getId() {
         return id;
