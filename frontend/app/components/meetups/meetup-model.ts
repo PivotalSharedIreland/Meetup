@@ -2,7 +2,7 @@ export class Meetup {
     constructor(public id:string,
                 public name:string,
                 public description:string,
-                public time:string) {
+                public time:Date) {
     }
 
     static fromJSON(json: string) {
@@ -10,7 +10,7 @@ export class Meetup {
     }
 
     static fromObject(obj) {
-        return new Meetup(obj.id, obj.name, obj.description, obj.time);
+        return new Meetup(obj.id, obj.name, obj.description, new Date(obj.time));
     }
 
     public toString() {

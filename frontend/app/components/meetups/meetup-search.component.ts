@@ -1,11 +1,13 @@
 import {Component} from 'angular2/core';
 import {MeetupService} from './meetup-service';
 import {Meetup} from "./meetup-model";
+import {MeetupListComponent} from "./meetup-list.component";
 
 @Component({
     selector: 'meetup-search',
     templateUrl: 'app/components/meetups/search.html',
-    providers: [MeetupService]
+    providers: [MeetupService],
+    directives: [MeetupListComponent]
 })
 export class MeetupSearchComponent {
 
@@ -19,10 +21,12 @@ export class MeetupSearchComponent {
     onSubmit() {
         this.meetupService.getList(this.city, this.countryCode)
             .subscribe(
-                data => this.result = JSON.parse(data.text()).map((o) => Meetup.fromObject(o)),
+                meetups => {
+                    this.result = meetups;
+                },
                 err => {
                     console.log(err);
-                    this.result = null;
+                    this.result = [];
                 },
                 () => console.log('Meetup results loaded')
             );
