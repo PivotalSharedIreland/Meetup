@@ -1,8 +1,12 @@
-module.exports = function (config) {
+// Karma configuration
+// Generated on Wed Jul 15 2015 09:44:02 GMT+0200 (Romance Daylight Time)
+'use strict';
+
+module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: './',
 
 
     // frameworks to use
@@ -11,59 +15,41 @@ module.exports = function (config) {
 
 
     // list of files / patterns to load in the browser
-    // list of files / patterns to load in the browser
     files: [
-      //'node_modules/traceur/bin/traceur-runtime.js',
-      { pattern: 'app/build/**/*.js', included: false, serve: true },
+      'node_modules/zone.js/dist/zone-microtask.js',
+      'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/zone.js/dist/jasmine-patch.js',
       'node_modules/es6-module-loader/dist/es6-module-loader.js',
-      'node_modules/systemjs/dist/system.js',
-      'https://code.angularjs.org/2.0.0-snapshot/angular2.js', // TODO: Find a way of loading from node_modules!
-      'karma-test-shim.js',
-      {
-        pattern: 'app/test/**/*spec.js',
-        included: false,
-        serve: true,
-        watch: true
-      }
+      'node_modules/traceur/bin/traceur-runtime.js', // Required by PhantomJS2, otherwise it shouts ReferenceError: Can't find variable: require
+      'node_modules/traceur/bin/traceur.js',
+      'node_modules/systemjs/dist/system.src.js',
+      'node_modules/reflect-metadata/Reflect.js',
+
+      { pattern: 'node_modules/angular2/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
+      { pattern: 'test/**/*.js', included: false, watched: true },
+      { pattern: 'node_modules/systemjs/dist/system-polyfills.js', included: false, watched: false }, // PhantomJS2 (and possibly others) might require it
+
+      'test-main.js'
     ],
 
 
     // list of files to exclude
     exclude: [
-      'app/build/bootstrap.js'
+      'node_modules/angular2/**/*_spec.js'
     ],
+
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/*.ts': ['typescript']
-    },
-
-    typescriptPreprocessor: {
-      "compilerOptions": {
-        "target": "ES5",
-        "module": "system",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "removeComments": false,
-        "noImplicitAny": false
-      },
-      "exclude": [
-        "node_modules"
-      ]
-    },
-
-    transformPath: function(path) {
-      return path.replace(/\.ts$/, '.js');
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'html'],
+    reporters: ['mocha'],
 
 
     // web server port
@@ -85,17 +71,33 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: [
+      'PhantomJS2',
+      'Chrome'
+    ],
+
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: false
+  });
 
-    plugins: [
-      'karma-jasmine',
-      'karma-chrome-launcher',
-      'karma-jasmine-html-reporter'
-    ]
-  })
+  if (process.env.APPVEYOR) {
+    config.browsers = ['IE'];
+    config.singleRun = true;
+    config.browserNoActivityTimeout = 90000; // Note: default value (10000) is not enough
+  }
+
+  if (process.env.TRAVIS || process.env.CIRCLECI) {
+    config.browsers = ['Chrome_travis_ci'];
+    config.singleRun = true;
+  }
 };
