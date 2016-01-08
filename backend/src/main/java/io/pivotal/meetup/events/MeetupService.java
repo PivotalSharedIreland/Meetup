@@ -39,6 +39,11 @@ public class MeetupService {
     }
 
     private Meetup convert(Event event) {
+
+        if (isNullEvent(event)) {
+            return null;
+        }
+
         Meetup meetup = new Meetup();
         meetup.setId(event.getId());
         meetup.setName(event.getName());
@@ -51,4 +56,7 @@ public class MeetupService {
         return meetup;
     }
 
+    private boolean isNullEvent(Event event) {
+        return event == null;
+    }
 }

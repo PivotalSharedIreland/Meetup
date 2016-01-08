@@ -8,10 +8,10 @@ import static org.springframework.http.HttpStatus.NOT_FOUND
 
 class MeetupClientSpec extends Specification {
 
-    MeetupClient mc;
+    DefaultMeetupClient mc;
 
     void setup() {
-        mc = new MeetupClient(restTemplate: Mock(RestTemplate), apiKey: 'apiKey')
+        mc = new DefaultMeetupClient(restTemplate: Mock(RestTemplate), apiKey: 'apiKey')
     }
 
     def "Should find open events by city"() {

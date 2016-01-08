@@ -2,6 +2,7 @@ package io.pivotal.meetup
 
 import com.meetup.api.Event
 import com.meetup.api.Group
+import com.meetup.api.DefaultMeetupClient
 import com.meetup.api.MeetupClient
 import com.meetup.api.Meta
 import com.meetup.api.OpenEventsResult
@@ -73,7 +74,25 @@ class MeetupServiceSpec extends Specification {
         specificMeetup.name == event.name
         specificMeetup.time == event.time
         specificMeetup.urlName == event.group.urlName
+    }
 
+    def "should handle null event"() {
+
+        given:
+        MeetupService meetupService = new MeetupService(meetupClient: Mock(MeetupClient))
+        def eventId = '227782967'
+        def urlName = 'The-Dublin-French-Meetup-Group'
+        def event = new Event(id: eventId, group: new Group(urlName: urlName))
+
+        when:
+        Meetup specificMeetup = meetupService.findMeetup(urlName, eventId);
+
+        then:
+        1 * meetupService.meetupClient.findEvent(urlName, eventId) >> {
+            null
+        }
+
+        specificMeetup == null
     }
 
 }
