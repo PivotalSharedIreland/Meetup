@@ -15,9 +15,13 @@ public class MeetupService {
     @Autowired
     private MeetupClient meetupClient;
 
-    public List<Meetup> findMeetups(FindMeetupRequest request) {
+    public List<Meetup> findMeetups(FindMeetupsRequest request) {
         OpenEventsResult openEventsResult = meetupClient.findOpenEventsByCityAndCountryCode(request.getCity(), request.getCountryCode());
         return convert(openEventsResult);
+    }
+
+    public Meetup findMeetup(String urlName, String eventId) {
+        return convert(meetupClient.findEvent(urlName, eventId));
     }
 
     private List<Meetup> convert(OpenEventsResult openEventsResult) {
@@ -46,4 +50,5 @@ public class MeetupService {
         }
         return meetup;
     }
+
 }

@@ -11,16 +11,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class MeetupControllerSpec extends Specification {
 
-    def 'Should return meetups' (){
-        given:
-        MeetupController meetupController = new MeetupController(meetupService: Mock(MeetupService))
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(meetupController).build()
+    MeetupController meetupController
+    MockMvc mockMvc
 
+    void setup() {
+        meetupController = new MeetupController(meetupService: Mock(MeetupService))
+        mockMvc = MockMvcBuilders.standaloneSetup(meetupController).build()
+    }
+
+    def 'Should return meetups'() {
         when:
-        def response = mockMvc.perform(get('/meetups').param('city','Dublin').param('countryCode','IE'))
+        def response = mockMvc.perform(get('/meetups').param('city', 'Dublin').param('countryCode', 'IE'))
 
         then:
-        1 * meetupController.meetupService.findMeetups(_ as FindMeetupRequest) >> { FindMeetupRequest findMeetupRequest ->
+        1 * meetupController.meetupService.findMeetups(_ as FindMeetupsRequest) >> { FindMeetupsRequest findMeetupRequest ->
             assert findMeetupRequest.city == 'Dublin'
             assert findMeetupRequest.countryCode == 'IE'
 
@@ -29,16 +33,12 @@ class MeetupControllerSpec extends Specification {
         response.andExpect(status().isOk()).andExpect(jsonPath('$', hasSize(2)))
     }
 
-    def 'Should return not found if there is no meetup' (){
-        given:
-        MeetupController meetupController = new MeetupController(meetupService: Mock(MeetupService))
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(meetupController).build()
-
+    def 'Should return not found if there is no meetup'() {
         when:
-        def response = mockMvc.perform(get('/meetups').param('city','Dublin').param('countryCode','IE'))
+        def response = mockMvc.perform(get('/meetups').param('city', 'Dublin').param('countryCode', 'IE'))
 
         then:
-        1 * meetupController.meetupService.findMeetups(_ as FindMeetupRequest) >> { FindMeetupRequest findMeetupRequest ->
+        1 * meetupController.meetupService.findMeetups(_ as FindMeetupsRequest) >> { FindMeetupsRequest findMeetupRequest ->
             assert findMeetupRequest.city == 'Dublin'
             assert findMeetupRequest.countryCode == 'IE'
 
@@ -46,4 +46,38 @@ class MeetupControllerSpec extends Specification {
         }
         response.andExpect(status().isNotFound())
     }
+
+    def 'Should return an event'() {
+
+        given:
+        def eventId = '227782967'
+        def urlName = 'The-Dublin-French-Meetup-Group'
+
+        when:
+        def response = mockMvc.perform(get("/meetups/${urlName}/events/${eventId}"))
+
+        then:
+        1 * meetupController.meetupService.findMeetup(urlName, eventId) >> new Meetup(id: "1")
+
+
+        response.andExpect(status().isOk())
+
+    }
+
+    def 'Should not find a Meetup'() {
+
+        given:
+        def eventId = 'fakeId'
+        def urlName = 'dontExist'
+
+        when:
+        def response = mockMvc.perform(get("/meetups/${urlName}/events/${eventId}"))
+
+        then:
+        1 * meetupController.meetupService.findMeetup(urlName, eventId) >> null
+
+        response.andExpect(status().isNotFound())
+
+    }
+
 }

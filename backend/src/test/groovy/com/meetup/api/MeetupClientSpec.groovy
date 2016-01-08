@@ -1,14 +1,20 @@
 package com.meetup.api
 
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
 
+import static org.springframework.http.HttpStatus.NOT_FOUND
+
 class MeetupClientSpec extends Specification {
 
-    def "Should find open events by city"() {
+    MeetupClient mc;
 
-        given:
-        MeetupClient mc = new MeetupClient(restTemplate: Mock(RestTemplate), apiKey: 'apiKey')
+    void setup() {
+        mc = new MeetupClient(restTemplate: Mock(RestTemplate), apiKey: 'apiKey')
+    }
+
+    def "Should find open events by city"() {
 
         when:
         def openEventResults = mc.findOpenEventsByCityAndCountryCode('Dublin', 'IE')
@@ -21,6 +27,7 @@ class MeetupClientSpec extends Specification {
             assert queryParams['city'] == 'Dublin'
             assert queryParams['country'] == 'IE'
             assert queryParams['key'] == 'apiKey'
+
 
             new OpenEventsResult(results: [
                     new Event(id: "1", group: new Group(urlName: 'url1')),
@@ -37,4 +44,52 @@ class MeetupClientSpec extends Specification {
         openEventResults.results[0].group.urlName == 'url1'
         openEventResults.results[1].group.urlName == 'url2'
     }
+
+    def "Should find specific event by id and urlName"() {
+
+        given:
+        def eventId = '227782967'
+        def urlName = 'The-Dublin-French-Meetup-Group'
+        def apiKey = 'apiKey'
+        def event = new Event(id: eventId, group: new Group(urlName: urlName))
+
+        when:
+        def specificEvent = mc.findEvent(urlName, eventId);
+
+        then:
+        1 * mc.restTemplate.getForEntity('https://api.meetup.com/{urlName}/events/{id}?key={key}', Event.class, _ as Map) >> { args ->
+
+            Map queryParams = args[2]
+
+            assert queryParams.size() == 3
+
+            assert queryParams['id'] == eventId
+            assert queryParams['urlName'] == urlName
+            assert queryParams['key'] == apiKey
+
+            ResponseEntity.ok(event)
+        }
+
+        specificEvent == event
+
+    }
+
+    def "Should handle 404 gracefully"() {
+
+        given:
+        def eventId = 'notfound'
+        def urlName = 'blah'
+        def apiKey = 'apiKey'
+
+        when:
+        def specificEvent = mc.findEvent(urlName, eventId)
+
+        then:
+        1 * mc.restTemplate.getForEntity('https://api.meetup.com/{urlName}/events/{id}?key={key}', Event.class, _ as Map) >> { args ->
+            new ResponseEntity<Event>(NOT_FOUND)
+        }
+
+        specificEvent == null
+    }
+
 }

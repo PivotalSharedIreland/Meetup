@@ -1,6 +1,6 @@
 package io.pivotal.meetup.events;
 
-public class FindMeetupRequest {
+public class FindMeetupsRequest {
 
     private String city;
     private String countryCode;
