@@ -234,7 +234,12 @@ npm test
 npm run build.test.watch      # 1st window
 npm run karma.start           # 2nd window
 
-# e2e (aka. end-to-end, integration) - In three different shell windows
+# e2e (aka. end-to-end, integration) - In four different shell windows
+# Run the backend in mock mode
+cd .. # CD to the project root
+spring_profiles_active=mock ../gradlew backend:bootRun
+
+cd frontend
 npm start
 # npm run webdriver-update <- You may need to run this the first time
 npm run webdriver-start

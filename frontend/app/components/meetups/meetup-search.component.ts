@@ -1,17 +1,17 @@
 import {Component} from 'angular2/core';
-import {MeetupService} from './meetup-service';
 import {Meetup} from './meetup-model';
 import {MeetupListComponent} from './meetup-list.component';
+import {Router} from 'angular2/router';
 
 @Component({
   selector: 'meetup-search',
   templateUrl: 'components/meetups/search.html',
-  providers: [MeetupService],
+  providers: [],
   directives: [MeetupListComponent]
 })
 export class MeetupSearchComponent {
 
-  constructor(private meetupService:MeetupService) {
+  constructor(private _router:Router) {
     this.countryCode = 'IE';
     this.initCountryCodes();
   };
@@ -23,17 +23,7 @@ export class MeetupSearchComponent {
 
 
   onSubmit() {
-    this.meetupService.getList(this.city, this.countryCode)
-      .subscribe(
-        meetups => {
-          this.result = meetups;
-        },
-        err => {
-          console.log(err);
-          this.result = [];
-        },
-        () => console.log('Meetup results loaded')
-      );
+    this._router.navigate(['List', {city: this.city, countryCode: this.countryCode}]);
   }
 
   initCountryCodes() {

@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Profile("!mock")
 @Component
-public class DefaultMeetupClient implements MeetupClient{
+public class DefaultMeetupClient implements MeetupClient {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -23,7 +23,7 @@ public class DefaultMeetupClient implements MeetupClient{
     private String apiKey;
 
     public OpenEventsResult findOpenEventsByCityAndCountryCode(String city, String country) {
-        return restTemplate.getForObject("https://api.meetup.com/2/open_events.json?key={key}&city={city}&country={country}", OpenEventsResult.class, new HashMap<String, String>() {{
+        return restTemplate.getForObject("https://api.meetup.com/2/open_events.json?key={key}&city={city}&country={country}", OpenEventsResult.class,  new HashMap<String, String>() {{
             put("city", city);
             put("country", country);
             put("key", apiKey);
