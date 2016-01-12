@@ -1,7 +1,11 @@
-import {Component} from 'angular2/core';
+import {Component, Inject} from 'angular2/core';
 import {Meetup} from './meetup-model';
 import {MeetupListComponent} from './meetup-list.component';
 import {Router} from 'angular2/router';
+
+interface Navigator {
+  navigate(linkParams: any[]);
+}
 
 @Component({
   selector: 'meetup-search',
@@ -11,9 +15,15 @@ import {Router} from 'angular2/router';
 })
 export class MeetupSearchComponent {
 
-  constructor(private _router:Router) {
+  constructor(
+    @Inject(Router) private navigator:Navigator
+  ) {
     this.countryCode = 'IE';
-    this.initCountryCodes();
+
+    this.countryCodes = [
+      {name: 'Ireland', iso_code: 'IE'},
+      {name: 'Italy', iso_code: 'IT'}
+    ];
   };
 
   result:Meetup[];
@@ -21,15 +31,7 @@ export class MeetupSearchComponent {
   countryCode:string;
   countryCodes:any[];
 
-
   onSubmit() {
-    this._router.navigate(['List', {city: this.city, countryCode: this.countryCode}]);
-  }
-
-  initCountryCodes() {
-    this.countryCodes = [
-      {name: 'Ireland', iso_code: 'IE'},
-      {name: 'Italy', iso_code: 'IT'}
-    ];
+    this.navigator.navigate(['List', {city: this.city, countryCode: this.countryCode}]);
   }
 }
