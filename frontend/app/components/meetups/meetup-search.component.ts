@@ -1,10 +1,10 @@
 import {Component, Inject} from 'angular2/core';
-import {Meetup} from './meetup-model';
+import {Meetup} from './meetup-module';
 import {MeetupListComponent} from './meetup-list.component';
 import {Router} from 'angular2/router';
 
 interface Navigator {
-  navigate(linkParams: any[]);
+  navigate(linkParams:any[]);
 }
 
 @Component({
@@ -15,9 +15,7 @@ interface Navigator {
 })
 export class MeetupSearchComponent {
 
-  constructor(
-    @Inject(Router) private navigator:Navigator
-  ) {
+  constructor(@Inject(Router) private navigator:Navigator) {
     this.countryCode = 'IE';
 
     this.countryCodes = [
@@ -26,7 +24,7 @@ export class MeetupSearchComponent {
     ];
   };
 
-  result:Meetup[];
+  result:Meetup.Model[];
   city:string;
   countryCode:string;
   countryCodes:any[];
