@@ -1,7 +1,9 @@
 import { it, describe, expect } from 'angular2/testing';
 
-describe('Meetup Search component', () => {
-  it('should quack', () => {
-    expect(false).toBePromise();
+export function main() {
+  describe('Meetup Search component', () => {
+    xit('should quack', () => {
+      expect(false).toEqual(false);
+    });
   });
-});
+}
