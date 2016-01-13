@@ -13,34 +13,36 @@ import {Meetup} from './meetup-module';
 import {RouteParams} from 'angular2/router';
 import {MeetupService} from './meetup-service';
 
+describe('meetup list component', () => {
+  var mockMeetupProvider, mockParameters, meetupListSubscriber, meetupList;
 
-class MockMeetupService implements Meetup.Provider {
-  getList(city:string, countryCode:string) {
-    var meetupList = [new Meetup.Model('1', 'meetup 1', 'cool meetup', 'meetup.example.com', new Date())];
-    return Observable.create(function (subscriber) {
-      subscriber._next(meetupList);
-      subscriber._complete();
-    });
-  }
-}
+  beforeEach(() => {
+    meetupList = [new Meetup.Model('1', 'meetup 1', 'cool meetup', 'meetup.example.com', new Date())];
 
-class MockParameters implements Meetup.Parameters {
-  get(param:string):string {
-    return param;
-  }
-}
+    mockMeetupProvider = jasmine.createSpyObj('mockMeetupProvider', ['getList']);
+    mockMeetupProvider.getList.and.returnValue(
+      Observable.create((subscriber) => {
+        meetupListSubscriber = subscriber;
+      })
+    );
 
-describe('meetup list component success', function () {
-  describe('Meetup List component', () => {
+    mockParameters = jasmine.createSpyObj('mockParameters', ['get']);
+    mockParameters.get.and.callFake((param:string) => param);
+  });
+
+  describe('Meetup List component integration', () => {
 
     beforeEachProviders(() => [
-        provide(MeetupService, {useValue: new MockMeetupService()}),
-        provide(RouteParams, {useClass: MockParameters})
+        provide(MeetupService, {useValue: mockMeetupProvider}),
+        provide(RouteParams, {useValue: mockParameters})
       ]
     );
 
     it('display meetup list', injectAsync([TestComponentBuilder], (tcb) => {
       return tcb.createAsync(MeetupListComponent).then((fixture) => {
+
+        meetupListSubscriber.next(meetupList);
+
         fixture.detectChanges();
         var compiled = fixture.debugElement.nativeElement;
 
@@ -48,66 +50,32 @@ describe('meetup list component success', function () {
       });
     }));
   });
+
+  describe('get meetup list', () => {
+    var component;
+
+    beforeEach(() => {
+      component = new MeetupListComponent(mockParameters, mockMeetupProvider);
+    });
+
+    describe('meetup list component success', function () {
+      it('should find meetup list', () => {
+        expect(component.meetupList).toEqual(undefined);
+
+        meetupListSubscriber.next(meetupList);
+
+        expect(component.meetupList).toEqual(meetupList);
+        expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode');
+      });
+    });
+
+    describe('empty meetup list component', function () {
+      it('should return an empty meetup list', () => {
+        meetupListSubscriber.error('ERROR: THIS WILL BE LOGGED!');
+
+        expect(component.meetupList).toEqual([]);
+        expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode');
+      });
+    });
+  });
 });
-
-
-//describe('meetup list component success', function () {
-//  var component, mockMeetupProvider, meetupList;
-//
-//  class MockParameters {
-//    get(param: string) {
-//      return param;
-//    }
-//  }
-//
-//  beforeEach(() => {
-//    mockMeetupProvider = jasmine.createSpyObj('mockMeetupProvider', ['getList']);
-//    meetupList = [new Meetup('1', 'meetup 1', 'cool meetup', 'meetup.example.com', new Date())];
-//    mockMeetupProvider.getList.and.returnValue(
-//      Observable.create(function (subscriber) {
-//        subscriber._next(meetupList);
-//        subscriber._complete();
-//      })
-//    );
-//
-//    var mockParameters = new MockParameters();
-//    component = new MeetupListComponent(mockParameters, mockMeetupProvider);
-//  });
-//
-//  it('should find meetup list', () => {
-//    expect(component.meetupList).toEqual(meetupList);
-//    expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode');
-//  });
-//
-//});
-//
-//
-//describe('empty meetup list component', function () {
-//  var component, mockMeetupProvider, emptyMeetupList;
-//
-//  class MockParameters {
-//    get(param: string) {
-//      return param;
-//    }
-//  }
-//
-//  beforeEach(() => {
-//    mockMeetupProvider = jasmine.createSpyObj('mockMeetupProvider', ['getList']);
-//    emptyMeetupList = [];
-//    mockMeetupProvider.getList.and.returnValue(
-//      Observable.create(function (subscriber) {
-//        subscriber._error('ERROR: THIS WILL BE LOGGED!');
-//      })
-//    );
-//
-//    var mockParameters = new MockParameters();
-//    component = new MeetupListComponent(mockParameters, mockMeetupProvider);
-//  });
-//
-//
-//  it('should return an empty meetup list', () => {
-//    expect(component.meetupList).toEqual(emptyMeetupList);
-//    expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode');
-//  });
-//
-//});
