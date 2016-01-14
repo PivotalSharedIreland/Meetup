@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 
-class MeetupClientSpec extends Specification {
+class DefaultMeetupClientSpec extends Specification {
 
     DefaultMeetupClient mc;
 
@@ -14,10 +14,42 @@ class MeetupClientSpec extends Specification {
         mc = new DefaultMeetupClient(restTemplate: Mock(RestTemplate), apiKey: 'apiKey')
     }
 
+    def "Should find open events by city and state"() {
+        when:
+        def openEventResults = mc.findOpenEvents('San Francisco', 'CA', 'USA')
+
+        then:
+        1 * mc.restTemplate.getForObject('https://api.meetup.com/2/open_events.json?key={key}&city={city}&state={state}&country={country}', OpenEventsResult.class, _ as Map) >> { args ->
+            Map queryParams = args[2]
+
+            assert queryParams.size() == 4
+            assert queryParams['city'] == 'San Francisco'
+            assert queryParams['state'] == 'CA'
+            assert queryParams['country'] == 'USA'
+            assert queryParams['key'] == 'apiKey'
+
+
+            new OpenEventsResult(results: [
+                    new Event(id: "1", group: new Group(urlName: 'url1')),
+                    new Event(id: "2", group: new Group(urlName: 'url2'))
+            ],
+
+                    meta: new Meta(totalCount: 2))
+        }
+
+        openEventResults.results.size() == 2
+        openEventResults.results[0].id == '1'
+        openEventResults.results[1].id == '2'
+        openEventResults.meta.totalCount == 2
+        openEventResults.results[0].group.urlName == 'url1'
+        openEventResults.results[1].group.urlName == 'url2'
+
+    }
+
     def "Should find open events by city"() {
 
         when:
-        def openEventResults = mc.findOpenEventsByCityAndCountryCode('Dublin', 'IE')
+        def openEventResults = mc.findOpenEvents('Dublin', 'IE')
 
         then:
         1 * mc.restTemplate.getForObject('https://api.meetup.com/2/open_events.json?key={key}&city={city}&country={country}', OpenEventsResult.class, _ as Map) >> { args ->

@@ -16,7 +16,9 @@ public class MeetupService {
     private MeetupClient meetupClient;
 
     public List<Meetup> findMeetups(FindMeetupsRequest request) {
-        OpenEventsResult openEventsResult = meetupClient.findOpenEventsByCityAndCountryCode(request.getCity(), request.getCountryCode());
+        OpenEventsResult openEventsResult =
+                request.getState() == null ? meetupClient.findOpenEvents(request.getCity(), request.getCountryCode())
+                : meetupClient.findOpenEvents(request.getCity(), request.getState(), request.getCountryCode());
         return convert(openEventsResult);
     }
 

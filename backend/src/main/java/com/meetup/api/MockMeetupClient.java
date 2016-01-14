@@ -11,7 +11,7 @@ import java.util.Date;
 public class MockMeetupClient implements MeetupClient {
 
     @Override
-    public OpenEventsResult findOpenEventsByCityAndCountryCode(String city, String country) {
+    public OpenEventsResult findOpenEvents(String city, String country) {
 
         if("unknown".equals(city)){
             Meta meta = new Meta();
@@ -33,6 +33,11 @@ public class MockMeetupClient implements MeetupClient {
         openEventsResult.setResults(Lists.newArrayList(event));
 
         return openEventsResult;
+    }
+
+    @Override
+    public OpenEventsResult findOpenEvents(String city, String state, String country) {
+        return findOpenEvents(city, country);
     }
 
     private Event buildEvent() {

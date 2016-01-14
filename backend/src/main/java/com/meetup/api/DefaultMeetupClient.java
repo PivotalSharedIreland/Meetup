@@ -3,7 +3,6 @@ package com.meetup.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -22,9 +21,18 @@ public class DefaultMeetupClient implements MeetupClient {
     @Value("${meetup.api.key}")
     private String apiKey;
 
-    public OpenEventsResult findOpenEventsByCityAndCountryCode(String city, String country) {
+    public OpenEventsResult findOpenEvents(String city, String country) {
         return restTemplate.getForObject("https://api.meetup.com/2/open_events.json?key={key}&city={city}&country={country}", OpenEventsResult.class,  new HashMap<String, String>() {{
             put("city", city);
+            put("country", country);
+            put("key", apiKey);
+        }});
+    }
+
+    public OpenEventsResult findOpenEvents(String city, String state, String country) {
+        return restTemplate.getForObject("https://api.meetup.com/2/open_events.json?key={key}&city={city}&state={state}&country={country}", OpenEventsResult.class,  new HashMap<String, String>() {{
+            put("city", city);
+            put("state", state);
             put("country", country);
             put("key", apiKey);
         }});
