@@ -1,5 +1,5 @@
 import {join} from 'path';
-import {APP_SRC, APP_DEST} from '../config';
+import {APP_SRC, APP_DEST, TMP_DIR} from '../config';
 
 export = function buildImagesDev(gulp, plugins) {
   return function () {
@@ -9,6 +9,7 @@ export = function buildImagesDev(gulp, plugins) {
 	join(APP_SRC, '**/*.png'),
 	join(APP_SRC, '**/*.svg'),
 	join(APP_SRC, '**/*.css'),
+	join(TMP_DIR, 'main.css'),
 	join(APP_SRC, '**/*.html')
       ])
       .pipe(gulp.dest(APP_DEST));

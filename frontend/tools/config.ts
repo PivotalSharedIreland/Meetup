@@ -59,7 +59,7 @@ export const NPM_DEPENDENCIES = [
 
 // Declare local files that needs to be injected
 export const APP_ASSETS = [
-  {src: `${ASSETS_SRC}/main.css`, inject: true, dest: CSS_DEST}
+  {src: `${TMP_DIR}/main.css`, inject: true, dest: CSS_DEST}
 ];
 
 NPM_DEPENDENCIES
