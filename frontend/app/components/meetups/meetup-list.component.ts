@@ -16,7 +16,7 @@ export class MeetupListComponent {
   constructor(@Inject(RouteParams) private _params:Meetup.Parameters,
               @Inject(MeetupService) private meetupProvider:Meetup.Provider) {
 
-    this.meetupProvider.getList(this._params.get('city'), this._params.get('countryCode'))
+    this.meetupProvider.getList(this._params.get('city'), this._params.get('countryCode'), this._params.get('state'))
       .subscribe(
         meetups => {
           this.meetupList = meetups;

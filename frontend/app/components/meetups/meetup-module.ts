@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable';
 export module Meetup {
 
   export interface Provider {
-    getList(city:string, country:string) : Observable<Model[]>;
+    getList(city:string, country:string, state:string) : Observable<Model[]>;
   }
 
   export interface Parameters {

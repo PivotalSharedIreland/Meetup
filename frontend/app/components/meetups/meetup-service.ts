@@ -8,10 +8,11 @@ export class MeetupService implements Meetup.Provider {
   constructor(public http:Http) {
   }
 
-  getList(city:string, countryCode:string):Observable<any> {
+  getList(city:string, countryCode:string, state:string):Observable<any> {
     let queryParams = new URLSearchParams();
     queryParams.set('city', city);
-    queryParams.set('countryCode', countryCode) ;
+    queryParams.set('state', state);
+    queryParams.set('countryCode', countryCode);
 
     return this.http.get('http://localhost:8080/meetups', {search: queryParams})
       .map(data => {

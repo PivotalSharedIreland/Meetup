@@ -2,34 +2,34 @@ import {Component, Inject} from 'angular2/core';
 import {Meetup} from './meetup-module';
 import {MeetupListComponent} from './meetup-list.component';
 import {Router} from 'angular2/router';
+import {geography} from './meetup-geography';
+import {FORM_DIRECTIVES, CORE_DIRECTIVES} from 'angular2/common';
 
 interface Navigator {
   navigate(linkParams:any[]);
 }
 
+
+
 @Component({
   selector: 'meetup-search',
   templateUrl: 'components/meetups/search.html',
-  providers: [],
-  directives: [MeetupListComponent]
+  directives: [MeetupListComponent, FORM_DIRECTIVES, CORE_DIRECTIVES, ]
 })
 export class MeetupSearchComponent {
+  countryCodes:any[];
+  stateList:any[];
 
   constructor(@Inject(Router) private navigator:Navigator) {
-    this.countryCode = 'IE';
-
-    this.countryCodes = [
-      {name: 'Ireland', iso_code: 'IE'},
-      {name: 'Italy', iso_code: 'IT'}
-    ];
+    this.countryCodes = geography.countries;
   };
 
-  result:Meetup.Model[];
-  city:string;
-  countryCode:string;
-  countryCodes:any[];
+  updateStateList(countryCode:string) {
+    let country = this.countryCodes.find((country) => country.iso_code === countryCode);
+    this.stateList = country.states;
+  }
 
-  onSubmit() {
-    this.navigator.navigate(['List', {city: this.city, countryCode: this.countryCode}]);
+  onSubmit(city:string, stateCode:string, countryCode:string) {
+    this.navigator.navigate(['List', {city: city, countryCode: countryCode, state: stateCode}]);
   }
 }

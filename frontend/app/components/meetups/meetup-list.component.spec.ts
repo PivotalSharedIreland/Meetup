@@ -65,7 +65,7 @@ describe('meetup list component', () => {
         meetupListSubscriber.next(meetupList);
 
         expect(component.meetupList).toEqual(meetupList);
-        expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode');
+        expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode', 'state');
       });
     });
 
@@ -74,7 +74,7 @@ describe('meetup list component', () => {
         meetupListSubscriber.error('ERROR: THIS WILL BE LOGGED!');
 
         expect(component.meetupList).toEqual([]);
-        expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode');
+        expect(mockMeetupProvider.getList).toHaveBeenCalledWith('city', 'countryCode', 'state');
       });
     });
   });
