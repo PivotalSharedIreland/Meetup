@@ -61,6 +61,9 @@
     },
     "gulp-sass/gulp-sass.d.ts": {
       "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "jasmine/jasmine.d.ts": {
+      "commit": "7577a2f4c134790891c52affdacdae99d802571b"
     }
   }
 }

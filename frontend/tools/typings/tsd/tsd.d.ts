@@ -19,3 +19,4 @@
 /// <reference path="../../../node_modules/definition-header/dist/index.d.ts" />
 /// <reference path="../../../node_modules/reflect-metadata/reflect-metadata.d.ts" />
 /// <reference path="gulp-sass/gulp-sass.d.ts" />
+/// <reference path="jasmine/jasmine.d.ts" />
